@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+
+    <script>
+        function c() {
+            location.href = "/create"
+        }
+    </script>
+</head>
+<% var id=1 %>
+
+    <body>
+        <%- include('partials/sidebar'); %>
+
+            <div><button onclick="c()" class="btn btn-primary mb-2">Create new inventory</button></div><br>
+          
+                    <form action="/view" id="searchForm" class="form-inline">
+                        <div class="form-group mb-2">
+                        <input type="text" name="search" id="form1" class="form-control rounded" placeholder="Search by name">
+                    </div>
+                        <input type="submit" class="btn btn-primary mb-2" value="search">
+                </form>
+              
+            <br>
+            <h8>-- click the id</h8>
+            <table class='table'>
+                <thead class='thead-dark'>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Inventory Name</th>
+                    <th scope="col">Manager</th>
+                </tr>
+                </thead>
+                <% items.forEach((datas)=> { %>
+                    <tr>
+                        <td scope="row"><a href="/detail?_id=<%=datas._id%>">
+                                <%=id%>
+                            </a></td>
+                        <td>
+                            <%=datas.name%>
+                        </td>
+                        <td>
+                            <%=datas.manager%>
+                        </td>
+                    </tr>
+                    <% id++; %>
+                        <% }) %>
+            </table>
+
+            </div>
+        </div>
+    </body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <%- include('partials/sidebar'); %>
+    <h1>Uploaded Images</h1>
+    <div>
+        <% items.forEach((datas)=> { %>
+
+            <script>
+                function e() {
+                    location.href = '/edit?_id=<%=datas._id%>'
+                }
+                function d() {
+                    location.href = '/delete?_id=<%=datas._id%>'
+                }
+                function c() {
+                    location.href = '/map?_id=<%=datas._id%>'
+                }
+                function back() {
+                    location.href = '/view'
+                }
+            </script>
+
+            <img src="data:image/<%=datas.img.contentType%>;base64,
+                     <%=datas.img.data.toString('base64')%>">
+            <div>
+                <p>Name: <%=datas.name%>
+                </p>
+                <p>Type: <%=datas.type%>
+                </p>
+                <p>Quantity: <%=datas.quantity%>
+                </p>
+                <p>Street: <%=datas.inventory_address.street%>
+                </p>
+                <p>Building: <%=datas.inventory_address.bg%>
+                </p>
+                <p>Country: <%=datas.inventory_address.country%>
+                </p>
+                <p>Zipcode: <%=datas.inventory_address.zipcode%>
+                </p>
+                <p>GPS: [latitude: <%=datas.inventory_address.coord.latitude%>], [longitude:
+                        <%=datas.inventory_address.coord.longitude%>]</p>
+                <P>Manager: <%=datas.manager%>
+                </P>
+                <p><button onclick="c()" class="btn btn-info">Map</button></p>
+            </div>
+
+            <div><span><button onclick="e()" class="btn btn-secondary">Edit</button> <button onclick="d()" class="btn btn-secondary">Delete</button>
+                    <button onclick="back()" class="btn btn-secondary">Back</button></span></div>
+            <% }) %>
+    </div>
+</div>
+</div>
+</body>
+
+</html>

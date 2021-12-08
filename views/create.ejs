@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function back() {
+            location.href = '/view'
+        }
+    </script>
+</head>
+<body>
+    <%- include('partials/sidebar'); %>
+    <form action="/create"  method="POST" enctype="multipart/form-data" class="form-control"> 
+        <div class="form-group mb-2">
+        <label for="name">Name* </label>
+        <input type="text" name="name" class="form-control w-50 ">
+        </div>
+        <br>
+        <div class="form-group mb-2">
+        <label for="type">Type</label>
+        <input type="text" name="type" class="form-control w-50">
+        </div>
+        <br>
+        <div class="form-group mb-2">
+        <label for="qty">Quantity</label>
+        <input type="number" name="qty" class="form-control w-50">
+        </div>
+        <br>
+        <div class="form-group mb-2">
+        <label for="street">Street</label>
+        <input type="text" name="street" class="form-control w-50">
+        </div>
+        <br>
+        <div class="form-group mb-2">
+        <label for="buliding">Building</label>
+        <input type="text" name="buliding" class="form-control w-50">
+        </div>
+        <br>
+        <div class="form-group mb-2">
+        <label for="country">Country</label>
+        <input type="text" name="country" class="form-control w-50">
+        </div>
+        <br>
+        <div class="form-group mb-2">
+        <label for="zipcode">Zipcode</label>
+        <input type="text" name="zipcode" class="form-control w-50">
+        </div>
+        <br>
+        <div class="form-group mb-2">
+        <label for="latitude">GPS Latitude</label>
+        <input type="text" name="latitude" class="form-control w-50">
+        </div>
+        <br>
+        <div class="form-group mb-2">
+        <label for="longitude">GPS Longitude</label>
+        <input type="text" name="longitude" class="form-control w-50">
+        </div>
+        <br>
+        <div class="form-group mb-2">
+        <label for="file">Photo</label>
+        <input type="file" name="filetoupload" >
+        </div>
+        <br>
+        <input type="submit" value="Create" class="btn btn-primary mb-2">
+    </form><br>
+    <button onclick="back()" class="btn btn-secondary">Back</button>
+</div>
+</div>
+</body>
+</html>
