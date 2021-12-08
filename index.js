@@ -304,10 +304,10 @@ app.post('/create', upload.single('filetoupload'), (req, res, next) => {
 
 //view total inventory and search the inventory by name
 app.get('/view', (req, res) => {
+    connectDB()
     if(!req.session.user){
         res.send("<script>alert('overtime');location.href = '/login'</script>")
     }else{
-    connectDB()
     if (req.query.search) {
         inventoryModel.find({ "name": { $regex: req.query.search, $options: 'i' } }, (err, items) => {
             if (err) {
