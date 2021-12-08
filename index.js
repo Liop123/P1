@@ -287,7 +287,7 @@ app.post('/create', upload.single('filetoupload'), (req, res, next) => {
                     longitude: req.body.longitude
                 }
             },
-            manager: "demo"
+            manager: user
         }
     }
     console.log(getdata)
