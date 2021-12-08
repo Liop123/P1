@@ -332,7 +332,11 @@ app.get('/view', (req, res) => {
 
 //login authentication
 app.get('/login', (req, res) => {
+    if(!req.session.user){
     res.render('login.ejs')
+    }else{
+        res.redirect('/view')
+    }
 })
 
 app.post('/login', (req, res) => {
