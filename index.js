@@ -37,6 +37,8 @@ app.use(session({
 }))
 app.use(express.static(__dirname + '/public'))
 
+app.set('views', path.join(__dirname, 'views'))
+
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads')
