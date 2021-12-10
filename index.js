@@ -90,27 +90,27 @@ app.get('/api/inventory/type/:type', (req, res) => {
 app.get('/', (req, res) => {
     console.log(req.session)
     var user = req.session.user
-    if(!user){
+    if (!user) {
         user = "guest"
     }
-    res.send("hello " + user +"<br>" + "<a href='/login'>Login First</a>")
+    res.send("hello " + user + "<br>" + "<a href='/login'>Login First</a>")
 })
 
 //edit page
 app.get('/edit', (req, res) => {
-    if(!req.session.user){
+    if (!req.session.user) {
         res.send("<script>alert('overtime');location.href = '/login'</script>")
-    }else{
-    connectDB()
-    inventoryModel.find({ "_id": req.query._id }, (err, items) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log(req.query._id)
-            res.render('edit.ejs', { items: items })
-        }
-    })
-}
+    } else {
+        connectDB()
+        inventoryModel.find({ "_id": req.query._id }, (err, items) => {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log(req.query._id)
+                res.render('edit.ejs', { items: items })
+            }
+        })
+    }
 })
 
 app.post('/edit', upload.single('filetoupload'), (req, res) => {
@@ -119,83 +119,99 @@ app.post('/edit', upload.single('filetoupload'), (req, res) => {
     if (!user) {
         user = "demo"
         res.send("<script>alert('overtime');location.href = '/login'</script>")
-    }else{
-    if (req.file != null) {
-        var getdata = {
-            name: req.body.name,
-            type: req.body.type,
-            quantity: req.body.qty,
-            img: {
-                data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
-                contentType: req.file.mimetype
-            },
-            inventory_address: {
-                street: req.body.street,
-                bg: req.body.buliding,
-                country: req.body.country,
-                zipcode: req.body.zipcode,
-                coord: {
-                    latitude: req.body.latitude,
-                    longitude: req.body.longitude
-                }
-            },
-            manager: user
-        }
     } else {
-        var getdata = {
-            name: req.body.name,
-            type: req.body.type,
-            quantity: req.body.qty,
-            img: {
-                data: "",
-                contentType: ""
-            },
-            inventory_address: {
-                street: req.body.street,
-                bg: req.body.buliding,
-                country: req.body.country,
-                zipcode: req.body.zipcode,
-                coord: {
-                    latitude: req.body.latitude,
-                    longitude: req.body.longitude
-                }
-            },
-            manager: user
+        if (req.file != null) {
+            var getdata = {
+                name: req.body.name,
+                type: req.body.type,
+                quantity: req.body.qty,
+                img: {
+                    data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
+                    contentType: req.file.mimetype
+                },
+                inventory_address: {
+                    street: req.body.street,
+                    bg: req.body.buliding,
+                    country: req.body.country,
+                    zipcode: req.body.zipcode,
+                    coord: {
+                        latitude: req.body.latitude,
+                        longitude: req.body.longitude
+                    }
+                },
+                manager: user
+            }
+        } else {
+            var getdata = {
+                name: req.body.name,
+                type: req.body.type,
+                quantity: req.body.qty,
+                img: {
+                    data: "",
+                    contentType: ""
+                },
+                inventory_address: {
+                    street: req.body.street,
+                    bg: req.body.buliding,
+                    country: req.body.country,
+                    zipcode: req.body.zipcode,
+                    coord: {
+                        latitude: req.body.latitude,
+                        longitude: req.body.longitude
+                    }
+                },
+                manager: user
+            }
         }
-    }
-    var getManager = "";
-    var check
-    connectDB()
-    inventoryModel.find({ "_id": req.body._id }, (err, items) => {
-        if (err) { console.log('error') };
-        getManager = items[0].manager
-            if(getManager === req.session.user){
+        var getManager = "";
+        var check
+        connectDB()
+        inventoryModel.find({ "_id": req.body._id }, (err, items) => {
+            if (err) { console.log('error') };
+            getManager = items[0].manager
+            if (getManager === req.session.user) {
                 check = true
             }
             console.log(req.session.user)
-            if(check){
+            if (check) {
                 inventoryModel.findByIdAndUpdate({ "_id": req.body._id }, getdata, (err, item) => {
-                    if (err)  { console.log('error') } ;
+                    if (err) { console.log('error') };
                     res.redirect(`/detail?_id=${req.body._id}`)
                 })
-            }else{
+            } else {
                 res.send(`<script>alert("wrong manager"); location.href = "/edit?_id=${req.body._id}"</script>`)
             }
-    })
+        })
     }
 })
 
 //delete intentory
 app.get('/delete', (req, res) => {
-    if(!req.session.user){
+    var getManager = "";
+    var check
+    if (!req.session.user) {
         res.send("<script>alert('overtime');location.href = '/login'</script>")
-    }else{
-    connectDB()
-    inventoryModel.deleteOne({ _id: req.query._id }, (err, result) => {
-        if (err) console.log(err);
-        res.render('delete.ejs')
-    })
-}
+    } else {
+        connectDB()
+        inventoryModel.find({ "_id": req.query._id }, (err, items) => {
+            if (err) { console.log('error') };
+            getManager = items[0].manager
+            if (getManager === req.session.user) {
+                check = true
+            }
+            console.log(req.session.user)
+            if (check) {
+                inventoryModel.deleteOne({ _id: req.query._id }, (err, result) => {
+                    if (err) console.log(err);
+                    res.render('delete.ejs')
+                })
+            } else {
+                res.send(`<script>alert("wrong manager"); location.href = "/edit?_id=${req.query._id}"</script>`)
+            }
+        })
+
+
+    }
 
 })
 
@@ -214,28 +230,28 @@ app.get('/map', ((req, res) => {
 
 //show inventory detail 
 app.get('/detail', (req, res) => {
-    if(!req.session.user){
+    if (!req.session.user) {
         res.send("<script>alert('overtime');location.href = '/login'</script>")
-    }else{
-    connectDB()
-    inventoryModel.find({ "_id": req.query._id }, (err, items) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log(req.query._id)
-            res.render('detail.ejs', { items: items })
-        }
-    })
-}
+    } else {
+        connectDB()
+        inventoryModel.find({ "_id": req.query._id }, (err, items) => {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log(req.query._id)
+                res.render('detail.ejs', { items: items })
+            }
+        })
+    }
 })
 
 
 //create inventory 
 app.get('/create', (req, res) => {
-    if(!req.session.user){
+    if (!req.session.user) {
         res.send("<script>alert('overtime');location.href = '/login'</script>")
-    }else{
-    res.render('create.ejs')
+    } else {
+        res.render('create.ejs')
     }
 })
 
@@ -246,58 +262,58 @@ app.post('/create', upload.single('filetoupload'), (req, res, next) => {
     if (!user) {
         user = "demo"
         res.send("<script>alert('overtime');location.href = '/login'</script>")
-    }else{
-    if (req.file != null) {
-        var getdata = {
-            name: req.body.name,
-            type: req.body.type,
-            quantity: req.body.qty,
-            img: {
-                data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
-                contentType: req.file.mimetype
-            },
-            inventory_address: {
-                street: req.body.street,
-                bg: req.body.buliding,
-                country: req.body.country,
-                zipcode: req.body.zipcode,
-                coord: {
-                    latitude: req.body.latitude,
-                    longitude: req.body.longitude
-                }
-            },
-            manager: user
-        }
     } else {
-        var getdata = {
-            name: req.body.name,
-            type: req.body.type,
-            quantity: req.body.qty,
-            img: {
-                data: "",
-                contentType: ""
-            },
-            inventory_address: {
-                street: req.body.street,
-                bg: req.body.buliding,
-                country: req.body.country,
-                zipcode: req.body.zipcode,
-                coord: {
-                    latitude: req.body.latitude,
-                    longitude: req.body.longitude
-                }
-            },
-            manager: user
+        if (req.file != null) {
+            var getdata = {
+                name: req.body.name,
+                type: req.body.type,
+                quantity: req.body.qty,
+                img: {
+                    data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
+                    contentType: req.file.mimetype
+                },
+                inventory_address: {
+                    street: req.body.street,
+                    bg: req.body.buliding,
+                    country: req.body.country,
+                    zipcode: req.body.zipcode,
+                    coord: {
+                        latitude: req.body.latitude,
+                        longitude: req.body.longitude
+                    }
+                },
+                manager: user
+            }
+        } else {
+            var getdata = {
+                name: req.body.name,
+                type: req.body.type,
+                quantity: req.body.qty,
+                img: {
+                    data: "",
+                    contentType: ""
+                },
+                inventory_address: {
+                    street: req.body.street,
+                    bg: req.body.buliding,
+                    country: req.body.country,
+                    zipcode: req.body.zipcode,
+                    coord: {
+                        latitude: req.body.latitude,
+                        longitude: req.body.longitude
+                    }
+                },
+                manager: user
+            }
         }
-    }
-    console.log(getdata)
-    connectDB()
+        console.log(getdata)
+        connectDB()
 
-    inventoryModel.create(getdata, (err, items) => {
-        if (err) return handleError(err);
-        console.log('Inserted')
-        res.redirect('/view')
-    })
+        inventoryModel.create(getdata, (err, items) => {
+            if (err) return handleError(err);
+            console.log('Inserted')
+            res.redirect('/view')
+        })
 
     }
 
@@ -307,34 +323,34 @@ app.post('/create', upload.single('filetoupload'), (req, res, next) => {
 //view total inventory and search the inventory by name
 app.get('/view', (req, res) => {
     connectDB()
-    if(!req.session.user){
+    if (!req.session.user) {
         res.send("<script>alert('overtime');location.href = '/login'</script>")
-    }else{
-    if (req.query.search) {
-        inventoryModel.find({ "name": { $regex: req.query.search, $options: 'i' } }, (err, items) => {
-            if (err) {
-                console.log(err)
-            } else {
-                res.render('view.ejs', { items: items })
-            }
-        })
     } else {
-        inventoryModel.find({}, (err, items) => {
-            if (err) {
-                console.log(err)
-            } else {
-                res.render('view.ejs', { items: items })
-            }
-        })
+        if (req.query.search) {
+            inventoryModel.find({ "name": { $regex: req.query.search, $options: 'i' } }, (err, items) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    res.render('view.ejs', { items: items })
+                }
+            })
+        } else {
+            inventoryModel.find({}, (err, items) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    res.render('view.ejs', { items: items })
+                }
+            })
+        }
     }
-}
 })
 
 //login authentication
 app.get('/login', (req, res) => {
-    if(!req.session.user){
-    res.render('login.ejs')
-    }else{
+    if (!req.session.user) {
+        res.render('login.ejs')
+    } else {
         res.redirect('/view')
     }
 })
@@ -428,24 +444,24 @@ app.post('/createAccount', (req, res) => {
         alert("Please enter")
         res.redirect('/createAccount')
     } else {
-        accountModel.find({}, (err, items)=>{
-            items.forEach((item)=>{
+        accountModel.find({}, (err, items) => {
+            items.forEach((item) => {
                 if (err) return err;
-                if(item.username === req.body.user){
+                if (item.username === req.body.user) {
                     path = true
                 }
             })
-            if(path){
+            if (path) {
                 res.send("<script>alert('the username may inserted');location.href = '/createAccount'</script>")
-                
-            }else{
+
+            } else {
                 accountModel.create(userData, (err, result) => {
                     if (err) return err;
                     console.log(result)
                     res.send("<script>alert('create successful');location.href = '/login'</script>")
                 })
             }
-    })
+        })
     }
 })
 
