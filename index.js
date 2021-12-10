@@ -206,7 +206,7 @@ app.get('/delete', (req, res) => {
                     res.render('delete.ejs')
                 })
             } else {
-                res.send(`<script>alert("wrong manager"); location.href = "/edit?_id=${req.query._id}"</script>`)
+                res.send(`<script>alert("wrong manager"); location.href = "/detail?_id=${req.query._id}"</script>`)
             }
         })
 
